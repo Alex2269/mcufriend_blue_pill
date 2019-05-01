@@ -77,10 +77,11 @@ void measure(void)
 {
   digitalWrite(LED, HIGH);
   digitalWrite(MOSFET, HIGH);
-  delay_us(5); // state
+  delay_us(1);
   // --
-  uint8_t adc_count = 128; // adc average
+  uint8_t adc_count = 16; // adc average
   uint32_t partAdcValue = 0;
+  // --
   for (uint8_t i = 0; i < adc_count; i++)
   {
     partAdcValue += (float)analogRead(INPUT_SENSOR1);
@@ -92,19 +93,19 @@ void measure(void)
   resistance = U_power / electric_current + correction;
   // --
   // overload protection
-  // если отключился нагреватель, уменьшаем время нагрева, для плавного разогрева (pause=0)
   if ((resistance < RESISTANCE_MIN) || (resistance > RESISTANCE_MAX)) // minimal and maximal resistace gate
   {
     digitalWrite(LED, LOW);
     digitalWrite(MOSFET, LOW);
     delay_us(100000);
+    // если отключился нагреватель, уменьшаем время нагрева, для плавного разогрева
     pause = 0;
     break;
   }
   // --
-  pause += 50;
   if(pause>=30000) pause = 30000;
   delay_us(pause);
+  pause += 50;
   // --
   digitalWrite(LED, LOW);
   digitalWrite(MOSFET, LOW);

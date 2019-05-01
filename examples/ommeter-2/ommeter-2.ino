@@ -1,3 +1,4 @@
+// --
 #include <SPI.h>
 #include "Adafruit_GFX.h"
 #include <mcufriend_blue_pill.h>
@@ -92,7 +93,6 @@ void loop(void)
 */
 void measure1(void)
 {
-  // --
   digitalWrite(LED, HIGH);
   digitalWrite(MOSFET, HIGH);
   delay_us(5); // state
@@ -112,19 +112,19 @@ void measure1(void)
   resistance = U_power / electric_current + correction;
   // --
   // overload protection
-  // если отключился нагреватель, уменьшаем время нагрева, для плавного разогрева (pause=0)
   if ((resistance < RESISTANCE_MIN) || (resistance > RESISTANCE_MAX)) // minimal and maximal resistace gate
   {
     digitalWrite(LED, LOW);
     digitalWrite(MOSFET, LOW);
     delay_us(100000);
+    // если отключился нагреватель, уменьшаем время нагрева, для плавного разогрева
     pause = 0;
     break;
   }
   // --
-  pause += 50;
   if(pause>=30000) pause = 30000;
   delay_us(pause);
+  pause += 50;
   // --
   digitalWrite(LED, LOW);
   digitalWrite(MOSFET, LOW);
