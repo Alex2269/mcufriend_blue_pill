@@ -4,7 +4,7 @@
 #include "ommeter-2.h"
 
 mcufriend_blue_pill tft;
-
+// --
 #define LED PC13
 #define MOSFET PB11
 
@@ -22,7 +22,7 @@ float electric_current;
 float resistance;
 float shunt = 0.005;
 float correction = -0.30;
-
+// --
 #define R1 330.0 // resistor feedback to ground
 #define R2 22000.0 // resistor feedback
 #define DELTA_GAIN1 0.86 // calibration of an error
@@ -36,7 +36,7 @@ float correction = -0.30;
 float gain_amplifier1 = R1 / R2 * DELTA_GAIN1; // mcp-601 4k3/100k = 0.043, for test
 float gain_amplifier2 = R3 / R4 * DELTA_GAIN2; // mcp-601 4k3/100k = 0.043, for test
 uint32_t pause = 50;
-
+// --
 void setup(void);
 void loop(void);
 void measure1(void);
@@ -92,15 +92,10 @@ void loop(void)
 */
 void measure1(void)
 {
-  pause += 50;
-  if (pause >= 30000)
-  {
-    pause = 30000;
-  }
   // --
   digitalWrite(LED, HIGH);
   digitalWrite(MOSFET, HIGH);
-  delay_us(pause); //
+  delay_us(5); // state
   // --
   float adcValue = 0;
   uint8_t adc_count = 128; // adc average
@@ -117,13 +112,19 @@ void measure1(void)
   resistance = U_power / electric_current + correction;
   // --
   // overload protection
+  // если отключился нагреватель, уменьшаем время нагрева, для плавного разогрева (pause=0)
   if ((resistance < RESISTANCE_MIN) || (resistance > RESISTANCE_MAX)) // minimal and maximal resistace gate
   {
     digitalWrite(LED, LOW);
     digitalWrite(MOSFET, LOW);
-    delay_us(250000);
+    delay_us(100000);
+    pause = 0;
     break;
   }
+  // --
+  pause += 50;
+  if(pause>=30000) pause = 30000;
+  delay_us(pause);
   // --
   digitalWrite(LED, LOW);
   digitalWrite(MOSFET, LOW);
