@@ -51,8 +51,9 @@ void setup(void)
 {
   pinMode(LED, OUTPUT);
   pinMode(MOSFET, OUTPUT);
-  // pinMode(INPUT_SENSOR1, INPUT);
-  // pinMode(INPUT_SENSOR2, INPUT);
+  pinMode(INPUT_SENSOR1, INPUT_ANALOG); // set up pin for analog input
+  // http://docs.leaflabs.com/static.leaflabs.com/pub/leaflabs/maple-docs/latest/lang/api/analogread.html
+  pinMode(INPUT_SENSOR2, INPUT_ANALOG); // set up pin for analog input
   // --
   Serial.begin(9600);
   // Serial.println("Serial took " + String((millis() - when)) + "ms to start");
