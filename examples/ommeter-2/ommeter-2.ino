@@ -35,7 +35,7 @@ float correction = -0.30;
 
 float gain_amplifier1 = R1 / R2 * DELTA_GAIN1; // mcp-601 4k3/100k = 0.043, for test
 float gain_amplifier2 = R3 / R4 * DELTA_GAIN2; // mcp-601 4k3/100k = 0.043, for test
-uint32_t pause = 1;
+uint32_t pause = 50;
 
 void setup(void);
 void loop(void);
@@ -100,7 +100,7 @@ void measure1(void)
   // --
   digitalWrite(LED, HIGH);
   digitalWrite(MOSFET, HIGH);
-  delay_us(1); //
+  delay_us(pause); //
   // --
   float adcValue = 0;
   uint8_t adc_count = 128; // adc average
@@ -116,16 +116,13 @@ void measure1(void)
   electric_current = adc_sensor_1 / shunt;
   resistance = U_power / electric_current + correction;
   // --
-  for (uint32_t i = 0; i < pause; i++) // loop delay, with overload protection
+  // overload protection
+  if ((resistance < RESISTANCE_MIN) || (resistance > RESISTANCE_MAX)) // minimal and maximal resistace gate
   {
-    if ((resistance < RESISTANCE_MIN) || (resistance > RESISTANCE_MAX)) // minimal and maximal resistace gate
-    {
-      digitalWrite(LED, LOW);
-      digitalWrite(MOSFET, LOW);
-      delay_us(250000);
-      break;
-    }
-    delay_us(1);
+    digitalWrite(LED, LOW);
+    digitalWrite(MOSFET, LOW);
+    delay_us(250000);
+    break;
   }
   // --
   digitalWrite(LED, LOW);
