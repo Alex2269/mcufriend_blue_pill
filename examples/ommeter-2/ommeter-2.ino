@@ -51,8 +51,8 @@ void setup(void)
 {
   pinMode(LED, OUTPUT);
   pinMode(MOSFET, OUTPUT);
-  pinMode (INPUT_SENSOR1, INPUT);
-  pinMode (INPUT_SENSOR2, INPUT);
+  // pinMode(INPUT_SENSOR1, INPUT);
+  // pinMode(INPUT_SENSOR2, INPUT);
   // --
   Serial.begin(9600);
   // Serial.println("Serial took " + String((millis() - when)) + "ms to start");
