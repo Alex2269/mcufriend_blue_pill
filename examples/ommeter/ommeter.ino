@@ -2,7 +2,7 @@
 #include <SPI.h>
 #include "Adafruit_GFX.h"
 #include <mcufriend_blue_pill.h>
-#include "ommetr.h"
+#include "ommeter.h"
 // --
 mcufriend_blue_pill tft;
 // --
@@ -75,15 +75,9 @@ void loop(void)
 */
 void measure(void)
 {
-  pause += 50;
-  if(pause>=30000)
-  {
-    pause = 30000;
-  }
-  // --
   digitalWrite(LED, HIGH);
   digitalWrite(MOSFET, HIGH);
-  delay_us(pause); //
+  delay_us(5); // state
   // --
   uint8_t adc_count = 128; // adc average
   uint32_t partAdcValue = 0;
@@ -98,13 +92,19 @@ void measure(void)
   resistance = U_power / electric_current + correction;
   // --
   // overload protection
+  // если отключился нагреватель, уменьшаем время нагрева, для плавного разогрева (pause=0)
   if ((resistance < RESISTANCE_MIN) || (resistance > RESISTANCE_MAX)) // minimal and maximal resistace gate
   {
     digitalWrite(LED, LOW);
     digitalWrite(MOSFET, LOW);
     delay_us(100000);
+    pause = 0;
     break;
   }
+  // --
+  pause += 50;
+  if(pause>=30000) pause = 30000;
+  delay_us(pause);
   // --
   digitalWrite(LED, LOW);
   digitalWrite(MOSFET, LOW);
