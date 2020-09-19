@@ -1,3 +1,4 @@
+//#define USE_SPECIAL             //check for custom drivers
 // #define bluepill connect
 
 #define WR_ACTIVE2  {WR_ACTIVE; WR_ACTIVE;}
